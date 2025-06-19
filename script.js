@@ -5,9 +5,9 @@ import { ScrollTrigger } from 'https://cdn.skypack.dev/gsap@3.12.0/ScrollTrigger
 const CONFIG = {
   debug: false,
   // spread: false,
-  // zoom: false,
+  zoom: false,
   backface: false,
-  // rotate: false,
+  rotate: false,
   buff: 2,
   animate: true,
   scroll: true,
