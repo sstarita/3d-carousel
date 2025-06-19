@@ -1,38 +1,35 @@
-import { Pane } from 'https://cdn.skypack.dev/tweakpane@4.0.4'
 import gsap from 'https://cdn.skypack.dev/gsap@3.12.0'
 import { ScrollTrigger } from 'https://cdn.skypack.dev/gsap@3.12.0/ScrollTrigger'
 
 const CONFIG = {
   debug: false,
-  // spread: false,
-  // zoom: false,
   backface: false,
-  // rotate: false,
   buff: 2,
   animate: true,
   scroll: true,
-  dark: true,
+  dark: false,
   masklower: 0.9,
   maskupper: 1.8,
   perspective: 320,
-  vertical: false,
+  vertical: true,
   infinite: false,
   items: 16,
   gap: 0.1,
   rotatex: 0,
   rotatez: 0,
-}
+};
 
 const MAIN = document.querySelector('main')
 
 const generateItems = () => {
-  const items = []
-  const controllers = []
+  const items = [];
+  const controllers = [];
+
+  const colors = ['#FF6B6B', '#6BCB77', '#4D96FF', '#FFC75F', '#F9F871', '#845EC2', '#008F7A', '#C34A36'];
 
   for (let i = 0; i < CONFIG.items; i++) {
-    const colors = ['#FF6B6B', '#6BCB77', '#4D96FF', '#FFC75F', '#F9F871', '#845EC2', '#008F7A', '#C34A36']
-    const bgColor = colors[i % colors.length]
-    const linkHref = `https://example.com/item${i + 1}` // Customize as needed
+    const bgColor = colors[i % colors.length];
+    const linkHref = `https://example.com/item${i + 1}`;
 
     items.push(`
       <li style="--index: ${i}; background-color: ${bgColor}; border-radius: 12px; display: grid; place-items: center;">
@@ -40,15 +37,15 @@ const generateItems = () => {
           Link ${i + 1}
         </a>
       </li>
-    `)
-    controllers.push('<li></li>')
+    `);
+    controllers.push('<li></li>');
   }
 
   return {
     items: items.join(''),
     controllers: controllers.join(''),
-  }
-}
+  };
+};
 
 let scroller
 
