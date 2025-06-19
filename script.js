@@ -1,7 +1,9 @@
-import gsap from 'https://cdn.skypack.dev/gsap@3.12.0'
-import { ScrollTrigger } from 'https://cdn.skypack.dev/gsap@3.12.0/ScrollTrigger'
+import { Pane } from 'https://cdn.skypack.dev/tweakpane@4.0.4';
+import gsap from 'https://cdn.skypack.dev/gsap@3.12.0';
+import { ScrollTrigger } from 'https://cdn.skypack.dev/gsap@3.12.0/ScrollTrigger';
 
 const CONFIG = {
+  debug: false,
   backface: false,
   buff: 2,
   animate: true,
@@ -12,7 +14,7 @@ const CONFIG = {
   perspective: 325,
   vertical: true,
   infinite: false,
-  items: 12,
+  items: 16,
   gap: 0.1,
   rotatex: 0,
   rotatez: 0,
@@ -29,8 +31,8 @@ const generateItems = () => {
     const color = colors[i % colors.length];
     const url = `https://example.com/item${i + 1}`;
     items.push(`
-      <li style="--index: ${i}; background-color: ${color};">
-        <a href="${url}" target="_blank" style="color: white; text-decoration: none; font-size: 1.2rem;">
+      <li style="--index: ${i}; background-color: ${color}; border-radius: 12px; display: grid; place-items: center;">
+        <a href="${url}" target="_blank" style="color: white; font-size: 1.2rem; text-decoration: none;">
           Link ${i + 1}
         </a>
       </li>
@@ -67,7 +69,7 @@ const handleScroll = () => {
 
 const setupController = () => {
   scroller = document.querySelector('.controller');
-  if (scroller) scroller.addEventListener('scroll', handleScroll);
+  scroller.addEventListener('scroll', handleScroll);
 };
 
 const render = () => {
@@ -87,6 +89,8 @@ let tween;
 
 const update = () => {
   const root = document.documentElement;
+  root.dataset.debug = CONFIG.debug;
+  root.dataset.animate = CONFIG.animate;
   root.dataset.backface = CONFIG.backface;
   root.dataset.scroll = CONFIG.scroll;
   root.dataset.dark = CONFIG.dark;
@@ -125,5 +129,64 @@ const update = () => {
   }
 };
 
+const sync = (event) => {
+  if (
+    !document.startViewTransition ||
+    !event ||
+    (event &&
+      event.target.controller.view.labelElement.innerText !== 'Dark Theme' &&
+      event.target.controller.view.labelElement.innerText !== 'Backface')
+  )
+    return update();
+  document.startViewTransition(update);
+};
+
+const controlPanel = new Pane({ title: 'Config', expanded: false });
+
+controlPanel.addBinding(CONFIG, 'animate', { label: 'Animate' });
+
+const scrolling = controlPanel.addFolder({ title: 'Scrolling', expanded: false });
+scrolling.addBinding(CONFIG, 'scroll', { label: 'Scroll Drive' });
+scrolling.addBinding(CONFIG, 'vertical', { label: 'Vertical' });
+scrolling.addBinding(CONFIG, 'infinite', { label: 'Infinite' });
+scrolling.addBinding(CONFIG, 'buff', { label: 'Ratio', min: 1, max: 10, step: 0.1 });
+scrolling.addBinding(CONFIG, 'debug', { label: 'Debug' });
+
+const rotation = controlPanel.addFolder({ title: 'Rotation', expanded: false });
+rotation.addBinding(CONFIG, 'rotatex', { min: 0, max: 360, step: 1, label: 'X' });
+rotation.addBinding(CONFIG, 'rotatez', { min: 0, max: 360, step: 1, label: 'Z' });
+
+const masker = controlPanel.addFolder({ title: 'Mask', expanded: false });
+masker.addBinding(CONFIG, 'masklower', { label: 'Lower (Item W)', min: 0, max: 5, step: 0.1 });
+masker.addBinding(CONFIG, 'maskupper', { label: 'Upper (Item W)', min: 0, max: 5, step: 0.1 });
+
+controlPanel.addBinding(CONFIG, 'backface', { label: 'Backface' });
+controlPanel.addBinding(CONFIG, 'perspective', {
+  label: 'Perspective (px)',
+  min: 50,
+  max: 1500,
+  step: 1,
+});
+controlPanel.addBinding(CONFIG, 'gap', {
+  label: 'Gap (%)',
+  min: 0,
+  max: 5,
+  step: 0.1,
+});
+const itemSwitch = controlPanel.addBinding(CONFIG, 'items', {
+  label: 'Items',
+  min: 10,
+  max: 50,
+  step: 1,
+});
+controlPanel.addBinding(CONFIG, 'dark', { label: 'Dark Theme' });
+
 render();
-update();
+sync();
+
+controlPanel.on('change', sync);
+itemSwitch.on('change', render);
+
+if (!CSS.supports('animation-timeline: scroll()')) {
+  gsap.registerPlugin(ScrollTrigger);
+}
