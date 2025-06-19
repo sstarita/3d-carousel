@@ -29,15 +29,18 @@ const generateItems = () => {
   const items = []
   const controllers = []
 
-  for (let i = 0; i < CONFIG.items + 1; i++) {
-    // scopes.push(`--item-${i}`)
-    if (i !== CONFIG.items) {
-      items.push(`
-        <li style="--index: ${i};">
-          <img src="https://picsum.photos/300/300?random=${i}" alt="" />
-        </li>
-      `)
-    }
+  for (let i = 0; i < CONFIG.items; i++) {
+    const colors = ['#FF6B6B', '#6BCB77', '#4D96FF', '#FFC75F', '#F9F871', '#845EC2', '#008F7A', '#C34A36']
+    const bgColor = colors[i % colors.length]
+    const linkHref = `https://example.com/item${i + 1}` // Customize as needed
+
+    items.push(`
+      <li style="--index: ${i}; background-color: ${bgColor}; border-radius: 12px; display: grid; place-items: center;">
+        <a href="${linkHref}" target="_blank" style="color: white; font-size: 1.2rem; text-decoration: none;">
+          Link ${i + 1}
+        </a>
+      </li>
+    `)
     controllers.push('<li></li>')
   }
 
