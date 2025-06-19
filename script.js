@@ -10,7 +10,7 @@ const CONFIG = {
   dark: false,
   masklower: 0.9,
   maskupper: 1.8,
-  perspective: 320,
+  perspective: 150,
   vertical: true,
   infinite: false,
   items: 16,
