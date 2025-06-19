@@ -10,13 +10,14 @@ const CONFIG = {
   dark: false,
   masklower: 0.9,
   maskupper: 1.8,
-  perspective: 150,
+  perspective: 325,
   vertical: true,
   infinite: false,
   items: 16,
   gap: 0.1,
   rotatex: 0,
   rotatez: 0,
+  zoom: 150,
 };
 
 const MAIN = document.querySelector('main')
