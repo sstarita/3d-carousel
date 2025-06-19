@@ -17,7 +17,6 @@ const CONFIG = {
   gap: 0.1,
   rotatex: 0,
   rotatez: 0,
-  zoom: 150,
 };
 
 const MAIN = document.querySelector('main')
